@@ -7,30 +7,43 @@ interface FormProps {
 }
 
 const Form: React.FC<FormProps> = (props) => {
-  const isPromptValid =
-    props.prompt.length > 0 && props.prompt.length <= props.characterLimit;
+  const isPromptValid = props.prompt.length <= props.characterLimit;
+  const isPromptPresent = props.prompt.length > 0;
   const updatePromptValue = (text: string) => {
     if (text.length <= props.characterLimit) {
       props.setPrompt(text);
     }
   };
+
+  let statusText = null;
+  let statusColor = "text-slate-500";
+  if (!isPromptValid) {
+    statusColor = "text-red-400";
+    statusText = `Input must be less than ${props.characterLimit} characters.`;
+  }
   return (
     <>
-      <p>
-        Tell me what your brand is about and I will generate copy and keywords
-        for you.
-      </p>
+      <div className="mb-6 text-slate-400">
+        <p>
+          Tell me what your brand is about and I will generate copy and keywords
+          for you.
+        </p>
+      </div>
       <input
+        className="p-2 w-full rounded-md focus:outline-teal-400 focus:outline text-slate-700"
         type="text"
         placeholder="coffee"
         value={props.prompt}
-        onChange={(e) => updatePromptValue(e.currentTarget.value)}
+        onChange={(e) => props.setPrompt(e.currentTarget.value)}
       />
-      <div>{props.prompt.length}/32</div>
+      <div className={statusColor + " flex justify-between my-2 mb-6 text-sm"}>
+        <div>{statusText}</div>
+        <div className="text-right">{props.prompt.length}/32</div>
+      </div>
       <button
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        className="bg-gradient-to-r from-teal-400 to-blue-500 disabled:opacity-50 w-full p-2 rounded-md text-lg"
         onClick={props.onSubmit}
-        disabled={props.isLoading || !isPromptValid}
+        disabled={props.isLoading || !isPromptPresent || !isPromptValid}
       >
         Submit
       </button>
