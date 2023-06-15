@@ -31,6 +31,9 @@ const CopyKitt: React.FC = () => {
     setSnippet("");
   };
 
+  if (snippet) {
+    console.log(`Prompt: ${prompt}, snippet: ${snippet}`);
+  }
   let displayedElement = snippet ? (
     <Results
       prompt={prompt}
